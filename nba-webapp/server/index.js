@@ -30,6 +30,15 @@ app.get('/player/:player', routes.getPlayerInfo); // Hint: Replace () => {} with
 
 
 app.get('/team/:team', routes.getTeamInfo);
+app.get('/team/:team', routes.getTeamRecords);
+app.get('/team/:team', routes.getTeamAvgSalary);
+app.get('/team/:team', routes.getTeamTopScorer);
+app.get('/team/:team', routes.getTeamTopRebounder);
+app.get('/team/:team', routes.getTeamTopPlayer);
+app.get('/team/:team', routes.getTeamTopPlayedPlayer);
+app.get('/team/:team', routes.getTeamTopAssister);
+app.get('/team/:team', routes.getTeamTop3ptShooter);
+app.get('/team/:team', routes.getTeamTotalSalary);
 
 
 
