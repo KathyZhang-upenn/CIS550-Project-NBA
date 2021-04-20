@@ -43,11 +43,14 @@ app.get('/team/:team', routes.getTeamTotalSalary);
 
 
 /* ---- Game ---- */
-app.get('/game/:game', routes.getGameInfo);
-
-
-
-
+app.get('/game/:game', routes.getGameInfoAsHomeTeam);
+app.get('/game/:game', routes.getGameInfoAsAwayTeam);
+app.get('/game/:game', routes.getSeasonPlayersStats);
+app.get('/game/:game', routes.getSeasonTop10Scorers);
+app.get('/game/:game', routes.getSeasonTop10Rebounders);
+app.get('/game/:game', routes.getSeasonTop10Assisters);
+app.get('/game/:game', routes.getSeasonTop10Stealers);
+app.get('/game/:game', routes.getSeasonTop10ThreePointsShooters);
 
 
 app.listen(8081, () => {

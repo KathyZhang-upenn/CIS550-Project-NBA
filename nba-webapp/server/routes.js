@@ -254,15 +254,30 @@ function getTeamTotalSalary(req, res) {
 };
 
 /* ---- Game ---- */
-function getGameInfo(req, res) {
-  var input = req.params.game;
-
+function getGameInfoAsHomeTeam(req, res) {
+  var inputSeason = req.params.season;
+  var inputTeam = req.params.team;
 
   var query = `
+  With away as (select season, game_time_est, teams.nickname as home_team, VISITOR_TEAM_ID as ID, 
+    PTS_home, round(FT_PCT_home,2) as FT_PCT_home,
+    round(fg3_Pct_home, 2 ) as FG3_PCT_home, Ast_home, reb_home, 
+    PTS_away, round(FT_PCT_away,2) as FT_PCT_away,
+    round(fg3_Pct_away, 2 ) as FG3_PCT_away, Ast_away, reb_away, HOME_TEAM_WINS
+    from games 
+    join teams
+    on games. home_team_ID = teams.team_ID
+    where season = '${inputSeason}'
+    and teams.nickname = '${inputTeam}')
+    
+    select season,  game_time_est, home_team, teams.nickname as away_team, PTS_home, FT_PCT_home, FG3_PCT_home, Ast_home, reb_home,
+    PTS_away, FT_PCT_away, FG3_PCT_away,Ast_away, reb_away, HOME_TEAM_WINS
+    from away
+    join teams
+    on away.ID = teams.team_ID 
+    order by away_team;
   `
     ;
-
-
 
   connection.query(query, function (err, rows, fields) {
     if (err) console.log(err);
@@ -273,7 +288,191 @@ function getGameInfo(req, res) {
   });
 };
 
+function getGameInfoAsAwayTeam(req, res) {
+  var inputSeason = req.params.season;
+  var inputTeam = req.params.team;
 
+  var query = `
+  With home as (select season,  game_time_est, home_team_ID as ID, teams.nickname as away_team, 
+    PTS_home, round(FT_PCT_home,2) as FT_PCT_home,
+    round(fg3_Pct_home, 2 ) as FG3_PCT_home, Ast_home, reb_home, 
+    PTS_away, round(FT_PCT_away,2) as FT_PCT_away,
+    round(fg3_Pct_away, 2 ) as FG3_PCT_away, Ast_away, reb_away, HOME_TEAM_WINS
+    from games 
+    join teams
+    on games. visitor_team_ID = teams.team_ID
+    where season = '${inputSeason}'
+    and teams.nickname = '${inputTeam}')
+    
+    select season, game_time_est, teams.nickname as home_team, away_team, PTS_home, FT_PCT_home, FG3_PCT_home, Ast_home, reb_home,
+    PTS_away, FT_PCT_away, FG3_PCT_away,Ast_away, reb_away, HOME_TEAM_WINS
+    from home
+    join teams
+    on home.ID = teams.team_ID 
+    order by home_team
+    
+  `
+    ;
+
+  connection.query(query, function (err, rows, fields) {
+    if (err) console.log(err);
+    else {
+      console.log(rows);
+      res.json(rows);
+    }
+  });
+};
+
+function getSeasonPlayersStats(req, res) {
+  var inputSeason = req.params.season;
+  var inputTeam = req.params.team;
+
+  var query = `
+  Select games.season,teams.nickname, city, player_name,sum(PTS) as PTS,sum(fgm) as FGM, round(avg (FG_pct), 2) as FG_PCT,
+  sum(fg3m) as FG3M, round(avg(fg3_pct),2) as FG3_PCT,
+  sum(ftm) as FTM,round(avg(ft_pct),2) as FT_PCT,
+  sum(oreb) as OREB, sum(dreb) as DREB,
+  sum(reb) as REB, sum(ast) as AST, 
+  sum(stl) as STL, sum(pf) as PF
+  from game_details
+  join teams on game_details.team_ID = teams.team_ID
+  join games on games.GAME_ID = game_details.game_id
+  where games. season = '${inputSeason}' and teams.nickname = '${inputTeam}'
+  group by game_details.PLAYER_ID
+  order by PTS DESC;
+  `
+    ;
+
+  connection.query(query, function (err, rows, fields) {
+    if (err) console.log(err);
+    else {
+      console.log(rows);
+      res.json(rows);
+    }
+  });
+};
+
+function getSeasonTop10Scorers(req, res) {
+  var inputSeason = req.params.season;
+
+  var query = `
+  Select SEASON, PLAYER_NAME, TEAM_ABBREVIATION, TEAM_CITY, sum(pts) as PTS_TOTAL
+  from game_details
+  join games
+  on game_details.game_id = games.GAME_ID
+  where season = '${inputSeason}'
+  group by PLAYER_ID
+  order by PTS_TOTAL desc
+  limit 10;
+  `
+    ;
+
+  connection.query(query, function (err, rows, fields) {
+    if (err) console.log(err);
+    else {
+      console.log(rows);
+      res.json(rows);
+    }
+  });
+};
+
+function getSeasonTop10Rebounders(req, res) {
+  var inputSeason = req.params.season;
+
+  var query = `
+  Select SEASON, PLAYER_NAME, TEAM_ABBREVIATION, TEAM_CITY, 
+  sum(reb) as REB_TOTAL
+  from game_details
+  join games
+  on game_details.game_id = games.GAME_ID
+  where season = '${inputSeason}'
+  group by PLAYER_ID
+  order by REB_TOTAL desc
+  limit 10;
+  
+  `
+    ;
+
+  connection.query(query, function (err, rows, fields) {
+    if (err) console.log(err);
+    else {
+      console.log(rows);
+      res.json(rows);
+    }
+  });
+};
+
+function getSeasonTop10Assisters(req, res) {
+  var inputSeason = req.params.season;
+
+  var query = `
+  Select SEASON, PLAYER_NAME, TEAM_ABBREVIATION, TEAM_CITY,  sum(AST) as AST_TOTAL
+  from game_details
+  join games
+  on game_details.game_id = games.GAME_ID
+  where season = '${inputSeason}'
+  group by PLAYER_ID
+  order by AST_TOTAL desc
+  limit 10;
+  `
+    ;
+
+  connection.query(query, function (err, rows, fields) {
+    if (err) console.log(err);
+    else {
+      console.log(rows);
+      res.json(rows);
+    }
+  });
+};
+
+function getSeasonTop10Stealers(req, res) {
+  var inputSeason = req.params.season;
+
+  var query = `
+  Select SEASON, PLAYER_NAME, TEAM_ABBREVIATION, TEAM_CITY,  sum(STL) as STL_TOTAL
+  from game_details
+  join games
+  on game_details.game_id = games.GAME_ID
+  where season = '${inputSeason}'
+  group by PLAYER_ID
+  order by STL_TOTAL desc
+  limit 10;
+  `
+    ;
+
+  connection.query(query, function (err, rows, fields) {
+    if (err) console.log(err);
+    else {
+      console.log(rows);
+      res.json(rows);
+    }
+  });
+};
+
+function getSeasonTop10ThreePointsShooters(req, res) {
+  var inputSeason = req.params.season;
+
+  var query = `
+  Select SEASON, PLAYER_NAME, TEAM_ABBREVIATION, TEAM_CITY,  sum(FG3M) as FG3M_TOTAL
+  from game_details
+  join games
+  on game_details.game_id = games.GAME_ID
+  where season = '${inputSeason}'
+  group by PLAYER_ID
+  order by FG3M_TOTAL desc
+  limit 10;  
+  `
+    ;
+
+  connection.query(query, function (err, rows, fields) {
+    if (err) console.log(err);
+    else {
+      console.log(rows);
+      res.json(rows);
+    }
+  });
+};
 /* ----  ---- */
 function getDecades(req, res) {
   var query = `
@@ -294,7 +493,7 @@ function getDecades(req, res) {
 // The exported functions, which can be accessed in index.js.
 module.exports = {
   getPlayerInfo: getPlayerInfo,  
-  getGameInfo: getGameInfo
+  
 
   getTeamRecords: getTeamRecords,
   getTeamAvgSalary: getTeamAvgSalary
@@ -306,5 +505,13 @@ module.exports = {
   getTeamTop3ptShooter: getTeamTop3ptShooter
   getTeamInfo: getTeamInfo
   getTeamTotalSalary: getTeamTotalSalary
-
+  
+  getGameInfoAsHomeTeam:getGameInfoAsHomeTeam
+  getGameInfoAsAwayTeam:getGameInfoAsAwayTeam
+  getSeasonPlayersStats:getSeasonPlayersStats
+  getSeasonTop10Scorers:getSeasonTop10Scorers
+  getSeasonTop10Rebounders:getSeasonTop10Rebounders
+  getSeasonTop10Assisters:getSeasonTop10Assisters
+  getSeasonTop10Stealers:getSeasonTop10Stealers
+  getSeasonTop10ThreePointsShooters:getSeasonTop10ThreePointsShooters
 }
