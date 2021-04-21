@@ -59,7 +59,7 @@ function getTeamInfo(req, res) {
 function getTeamRecords(req, res) {
   var input = req.params.team;
   var query = `
-  SELECT (SEASON_ID - 20000) AS Season, MAX(G) AS Games, MAX(W) AS Win, MAX(L) AS Loss, (MAX(W)/MAX(G)) as "Win %"
+  SELECT (SEASON_ID - 20000) AS Season, MAX(G) AS Games, MAX(W) AS Win, MAX(L) AS Loss, (MAX(W)/MAX(G)) as WinR
   FROM NBA.ranking
   WHERE TEAM_ID = '${input}' AND SEASON_ID > 20000
   GROUP BY SEASON_ID
@@ -212,10 +212,10 @@ function getTeamTop3ptShooter(req, res) {
   var input1 = req.params.team
   var input2 = req.params.year
   var query = `
-  SELECT PLAYER_NAME, `3P%`
+  SELECT PLAYER_NAME, '3P%'
   FROM NBA.season_stats
   WHERE YEAR ='${input1}' AND TEAM = '${input2}' AND G >= 20 AND 3PA > 20 
-  ORDER BY `3P%` DESC
+  ORDER BY '3P%' DESC
   LIMIT 1
   `;
   connection.query(query, function (err, rows, fields) {
@@ -294,17 +294,17 @@ function getDecades(req, res) {
 // The exported functions, which can be accessed in index.js.
 module.exports = {
   getPlayerInfo: getPlayerInfo,  
-  getGameInfo: getGameInfo
+  getGameInfo: getGameInfo,
 
   getTeamRecords: getTeamRecords,
-  getTeamAvgSalary: getTeamAvgSalary
-  getTeamTopScorer: getTeamTopScorer
-  getTeamTopRebounder: getTeamTopRebounder
-  getTeamTopPlayer: getTeamTopPlayer
-  getTeamTopPlayedPlayer: getTeamTopPlayedPlayer
-  getTeamTopAssister: getTeamTopAssister
-  getTeamTop3ptShooter: getTeamTop3ptShooter
-  getTeamInfo: getTeamInfo
-  getTeamTotalSalary: getTeamTotalSalary
+  getTeamAvgSalary: getTeamAvgSalary,
+  getTeamTopScorer: getTeamTopScorer,
+  getTeamTopRebounder: getTeamTopRebounder,
+  getTeamTopPlayer: getTeamTopPlayer,
+  getTeamTopPlayedPlayer: getTeamTopPlayedPlayer,
+  getTeamTopAssister: getTeamTopAssister,
+  getTeamTop3ptShooter: getTeamTop3ptShooter,
+  getTeamInfo: getTeamInfo,
+  getTeamTotalSalary: getTeamTotalSalary,
 
 }
