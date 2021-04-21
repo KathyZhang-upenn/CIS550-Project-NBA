@@ -53,9 +53,6 @@ function getTeamInfo(req, res) {
   });
 }
 
-
-
-
 function getTeamRecords(req, res) {
   var input = req.params.team;
   var query = `
@@ -63,26 +60,6 @@ function getTeamRecords(req, res) {
   FROM NBA.ranking
   WHERE TEAM_ID = '${input}' AND SEASON_ID > 20000
   GROUP BY SEASON_ID
-  `;
-  connection.query(query, function (err, rows, fields) {
-    if (err) console.log(err);
-    else {
-      console.log(rows);
-      res.json(rows);
-    }
-  });
-};
-
-function getTeamAvgSalary(req, res) {
-  var input = req.params.team;
-  var query = `
-  SELECT NBA.salaries.YEAR, NICKNAME AS TEAM, AVG(SALARY) AS AVG_SALARY
-  FROM NBA.salaries JOIN NBA.players ON NBA.salaries.YEAR = NBA.players.SEASON AND NBA.salaries.PLAYER_NAME =
-  NBA.players.PLAYER_NAME
-  JOIN NBA.teams ON NBA.players.TEAM_ID = NBA.teams.TEAM_ID
-  WHERE NBA.players.TEAM_ID = '${input}'
-  GROUP BY NBA.salaries.YEAR, NICKNAME
-  ORDER BY YEAR;
   `;
   connection.query(query, function (err, rows, fields) {
     if (err) console.log(err);
