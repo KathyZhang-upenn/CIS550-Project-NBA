@@ -36,6 +36,25 @@ function getPlayerInfo(req, res) {
 
 /* ---- Team ---- */
 
+function getTeamPlayers(req, res) {
+  var input1 = req.params.team
+  var input2 = req.params.year
+  var query = `
+  SELECT PLAYER_NAME AS Name, G, GS, (MP/G) As MPG, (PTS/G) AS PTS, (AST/G) AS AST, (TRB/G) AS REB, (STL/G) AS STL, (BLK/G) AS BLK, `FG%`, `3P%`, `FT%`, PER
+  FROM NBA.teams JOIN NBA.season_stats ON NBA.teams.ABBREVIATION = NBA.season_stats.TEAM
+  WHERE NBA.teams.TEAM_ID = '${input1}' AND NBA.season_stats.YEAR = '${input2}';
+  `;
+  connection.query(query, function (err, rows, fields) {
+    if (err) console.log(err);
+    else {
+      // connection.query(query, function (err, rows, fields) {
+      //   connection.query(query, function (err, rows, fields) {
+      res.json(rows);
+    }
+  });
+}
+
+
 function getTeamInfo(req, res) {
   var input = req.params.team;
   var query = `
@@ -471,7 +490,7 @@ function getDecades(req, res) {
 module.exports = {
   getPlayerInfo: getPlayerInfo,  
   
-
+  getTeamPlayers: getTeamPlayers
   getTeamRecords: getTeamRecords,
   getTeamAvgSalary: getTeamAvgSalary
   getTeamTopScorer: getTeamTopScorer
@@ -482,7 +501,7 @@ module.exports = {
   getTeamTop3ptShooter: getTeamTop3ptShooter
   getTeamInfo: getTeamInfo
   getTeamTotalSalary: getTeamTotalSalary
-  
+
   getGameInfoAsHomeTeam:getGameInfoAsHomeTeam
   getGameInfoAsAwayTeam:getGameInfoAsAwayTeam
   getSeasonPlayersStats:getSeasonPlayersStats

@@ -28,7 +28,7 @@ app.get('/player/:player', routes.getPlayerInfo); // Hint: Replace () => {} with
 
 /* ---- Team  ---- */
 
-
+app.get('/team/:team', routes.getTeamPlayers);
 app.get('/team/:team', routes.getTeamInfo);
 app.get('/team/:team', routes.getTeamRecords);
 app.get('/team/:team', routes.getTeamAvgSalary);
