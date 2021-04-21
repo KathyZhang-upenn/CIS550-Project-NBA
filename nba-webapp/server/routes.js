@@ -36,6 +36,25 @@ function getPlayerInfo(req, res) {
 
 /* ---- Team ---- */
 
+function getTeamPlayers(req, res) {
+  var input1 = req.params.team
+  var input2 = req.params.year
+  var query = `
+  SELECT PLAYER_NAME AS Name, G, GS, (MP/G) As MPG, (PTS/G) AS PTS, (AST/G) AS AST, (TRB/G) AS REB, (STL/G) AS STL, (BLK/G) AS BLK, `FG%`, `3P%`, `FT%`, PER
+  FROM NBA.teams JOIN NBA.season_stats ON NBA.teams.ABBREVIATION = NBA.season_stats.TEAM
+  WHERE NBA.teams.TEAM_ID = '${input1}' AND NBA.season_stats.YEAR = '${input2}';
+  `;
+  connection.query(query, function (err, rows, fields) {
+    if (err) console.log(err);
+    else {
+      // connection.query(query, function (err, rows, fields) {
+      //   connection.query(query, function (err, rows, fields) {
+      res.json(rows);
+    }
+  });
+}
+
+
 function getTeamInfo(req, res) {
   var input = req.params.team;
   var query = `
@@ -53,9 +72,6 @@ function getTeamInfo(req, res) {
   });
 }
 
-
-
-
 function getTeamRecords(req, res) {
   var input = req.params.team;
   var query = `
@@ -63,26 +79,6 @@ function getTeamRecords(req, res) {
   FROM NBA.ranking
   WHERE TEAM_ID = '${input}' AND SEASON_ID > 20000
   GROUP BY SEASON_ID
-  `;
-  connection.query(query, function (err, rows, fields) {
-    if (err) console.log(err);
-    else {
-      console.log(rows);
-      res.json(rows);
-    }
-  });
-};
-
-function getTeamAvgSalary(req, res) {
-  var input = req.params.team;
-  var query = `
-  SELECT NBA.salaries.YEAR, NICKNAME AS TEAM, AVG(SALARY) AS AVG_SALARY
-  FROM NBA.salaries JOIN NBA.players ON NBA.salaries.YEAR = NBA.players.SEASON AND NBA.salaries.PLAYER_NAME =
-  NBA.players.PLAYER_NAME
-  JOIN NBA.teams ON NBA.players.TEAM_ID = NBA.teams.TEAM_ID
-  WHERE NBA.players.TEAM_ID = '${input}'
-  GROUP BY NBA.salaries.YEAR, NICKNAME
-  ORDER BY YEAR;
   `;
   connection.query(query, function (err, rows, fields) {
     if (err) console.log(err);
@@ -494,7 +490,7 @@ function getDecades(req, res) {
 module.exports = {
   getPlayerInfo: getPlayerInfo,  
   
-
+  getTeamPlayers: getTeamPlayers
   getTeamRecords: getTeamRecords,
   getTeamAvgSalary: getTeamAvgSalary
   getTeamTopScorer: getTeamTopScorer
@@ -505,7 +501,7 @@ module.exports = {
   getTeamTop3ptShooter: getTeamTop3ptShooter
   getTeamInfo: getTeamInfo
   getTeamTotalSalary: getTeamTotalSalary
-  
+
   getGameInfoAsHomeTeam:getGameInfoAsHomeTeam
   getGameInfoAsAwayTeam:getGameInfoAsAwayTeam
   getSeasonPlayersStats:getSeasonPlayersStats
