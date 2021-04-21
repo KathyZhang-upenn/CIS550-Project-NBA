@@ -251,8 +251,8 @@ function getTeamTotalSalary(req, res) {
 
 /* ---- Game ---- */
 function getGameInfoAsHomeTeam(req, res) {
-  var inputSeason = req.params.season;
-  var inputTeam = req.params.team;
+  var inputTeam = req.params.team
+  var inputSeason = req.params.year
 
   var query = `
   With away as (select season, game_time_est, teams.nickname as home_team, VISITOR_TEAM_ID as ID, 
@@ -264,7 +264,7 @@ function getGameInfoAsHomeTeam(req, res) {
     join teams
     on games. home_team_ID = teams.team_ID
     where season = '${inputSeason}'
-    and teams.nickname = '${inputTeam}')
+    and teams.team_ID = '${inputTeam}')
     
     select season,  game_time_est, home_team, teams.nickname as away_team, PTS_home, FT_PCT_home, FG3_PCT_home, Ast_home, reb_home,
     PTS_away, FT_PCT_away, FG3_PCT_away,Ast_away, reb_away, HOME_TEAM_WINS
@@ -285,8 +285,8 @@ function getGameInfoAsHomeTeam(req, res) {
 };
 
 function getGameInfoAsAwayTeam(req, res) {
-  var inputSeason = req.params.season;
-  var inputTeam = req.params.team;
+  var inputTeam = req.params.team
+  var inputSeason = req.params.year
 
   var query = `
   With home as (select season,  game_time_est, home_team_ID as ID, teams.nickname as away_team, 
@@ -298,7 +298,7 @@ function getGameInfoAsAwayTeam(req, res) {
     join teams
     on games. visitor_team_ID = teams.team_ID
     where season = '${inputSeason}'
-    and teams.nickname = '${inputTeam}')
+    and teams.team_ID = '${inputTeam}')
     
     select season, game_time_est, teams.nickname as home_team, away_team, PTS_home, FT_PCT_home, FG3_PCT_home, Ast_home, reb_home,
     PTS_away, FT_PCT_away, FG3_PCT_away,Ast_away, reb_away, HOME_TEAM_WINS
@@ -320,8 +320,8 @@ function getGameInfoAsAwayTeam(req, res) {
 };
 
 function getSeasonPlayersStats(req, res) {
-  var inputSeason = req.params.season;
-  var inputTeam = req.params.team;
+  var inputTeam = req.params.team
+  var inputSeason = req.params.year
 
   var query = `
   Select games.season,teams.nickname, city, player_name,sum(PTS) as PTS,sum(fgm) as FGM, round(avg (FG_pct), 2) as FG_PCT,
@@ -333,7 +333,7 @@ function getSeasonPlayersStats(req, res) {
   from game_details
   join teams on game_details.team_ID = teams.team_ID
   join games on games.GAME_ID = game_details.game_id
-  where games. season = '${inputSeason}' and teams.nickname = '${inputTeam}'
+  where games. season = '${inputSeason}' and teams.team_ID = '${inputTeam}'
   group by game_details.PLAYER_ID
   order by PTS DESC;
   `
@@ -349,7 +349,7 @@ function getSeasonPlayersStats(req, res) {
 };
 
 function getSeasonTop10Scorers(req, res) {
-  var inputSeason = req.params.season;
+  var inputSeason = req.params.year;
 
   var query = `
   Select SEASON, PLAYER_NAME, TEAM_ABBREVIATION, TEAM_CITY, sum(pts) as PTS_TOTAL
@@ -373,7 +373,7 @@ function getSeasonTop10Scorers(req, res) {
 };
 
 function getSeasonTop10Rebounders(req, res) {
-  var inputSeason = req.params.season;
+  var inputSeason = req.params.year;
 
   var query = `
   Select SEASON, PLAYER_NAME, TEAM_ABBREVIATION, TEAM_CITY, 
@@ -399,7 +399,7 @@ function getSeasonTop10Rebounders(req, res) {
 };
 
 function getSeasonTop10Assisters(req, res) {
-  var inputSeason = req.params.season;
+  var inputSeason = req.params.year;
 
   var query = `
   Select SEASON, PLAYER_NAME, TEAM_ABBREVIATION, TEAM_CITY,  sum(AST) as AST_TOTAL
@@ -423,7 +423,7 @@ function getSeasonTop10Assisters(req, res) {
 };
 
 function getSeasonTop10Stealers(req, res) {
-  var inputSeason = req.params.season;
+  var inputSeason = req.params.year;
 
   var query = `
   Select SEASON, PLAYER_NAME, TEAM_ABBREVIATION, TEAM_CITY,  sum(STL) as STL_TOTAL
@@ -447,7 +447,7 @@ function getSeasonTop10Stealers(req, res) {
 };
 
 function getSeasonTop10ThreePointsShooters(req, res) {
-  var inputSeason = req.params.season;
+  var inputSeason = req.params.year;
 
   var query = `
   Select SEASON, PLAYER_NAME, TEAM_ABBREVIATION, TEAM_CITY,  sum(FG3M) as FG3M_TOTAL
