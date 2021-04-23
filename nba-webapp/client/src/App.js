@@ -5,9 +5,9 @@ import {
 	Switch
 } from 'react-router-dom';
 import Home from 'pages/home/home.js';
-import Team from 'pages/team/team.js';
+import Team from 'pages/team/Team.js';
 import Player from 'pages/player/player.js';
-import Game from 'pages/game/game.js';
+import Game from 'pages/game/Game.js';
 
 export default class App extends React.Component {
 

@@ -40,7 +40,7 @@ function getTeamPlayers(req, res) {
   var input1 = req.params.team
   var input2 = req.params.year
   var query = `
-  SELECT PLAYER_NAME AS Name, G, GS, (MP/G) As MPG, (PTS/G) AS PTS, (AST/G) AS AST, (TRB/G) AS REB, (STL/G) AS STL, (BLK/G) AS BLK, `FG%`, `3P%`, `FT%`, PER
+  SELECT PLAYER_NAME AS Name, G, GS, (MP/G) As MPG, (PTS/G) AS PTS, (AST/G) AS AST, (TRB/G) AS REB, (STL/G) AS STL, (BLK/G) AS BLK, PER
   FROM NBA.teams JOIN NBA.season_stats ON NBA.teams.ABBREVIATION = NBA.season_stats.TEAM
   WHERE NBA.teams.TEAM_ID = '${input1}' AND NBA.season_stats.YEAR = '${input2}';
   `;
@@ -73,11 +73,12 @@ function getTeamInfo(req, res) {
 }
 
 function getTeamRecords(req, res) {
-  var input = req.params.team;
+  var input1 = req.params.team;
+  var input2 = req.params.year;
   var query = `
-  SELECT (SEASON_ID - 20000) AS Season, MAX(G) AS Games, MAX(W) AS Win, MAX(L) AS Loss, (MAX(W)/MAX(G)) as "Win %"
+  SELECT (SEASON_ID - 20000) AS Season, MAX(G) AS Games, MAX(W) AS Win, MAX(L) AS Loss, (MAX(W)/MAX(G)) as WinR
   FROM NBA.ranking
-  WHERE TEAM_ID = '${input}' AND SEASON_ID > 20000
+  WHERE TEAM_ID = '${input1}' AND SEASON_ID > 20000 AND (SEASON_ID - 20000) = '${input2}'
   GROUP BY SEASON_ID
   `;
   connection.query(query, function (err, rows, fields) {
@@ -90,15 +91,15 @@ function getTeamRecords(req, res) {
 };
 
 function getTeamAvgSalary(req, res) {
-  var input = req.params.team;
+  var input1 = req.params.team;
+  var input2 = req.params.year;
   var query = `
-  SELECT NBA.salaries.YEAR, NICKNAME AS TEAM, AVG(SALARY) AS AVG_SALARY
+  SELECT NICKNAME AS TEAM, AVG(SALARY) AS AVG_SALARY
   FROM NBA.salaries JOIN NBA.players ON NBA.salaries.YEAR = NBA.players.SEASON AND NBA.salaries.PLAYER_NAME =
   NBA.players.PLAYER_NAME
   JOIN NBA.teams ON NBA.players.TEAM_ID = NBA.teams.TEAM_ID
-  WHERE NBA.players.TEAM_ID = '${input}'
-  GROUP BY NBA.salaries.YEAR, NICKNAME
-  ORDER BY YEAR;
+  WHERE NBA.players.TEAM_ID = '${input1}' AND NBA.salaries.YEAR = '${input2}'
+  GROUP BY NICKNAME;
   `;
   connection.query(query, function (err, rows, fields) {
     if (err) console.log(err);
@@ -114,8 +115,8 @@ function getTeamTopScorer(req, res) {
   var input2 = req.params.year
   var query = `
   SELECT PLAYER_NAME, PTS
-  FROM NBA.season_stats
-  WHERE YEAR ='${input1}' AND TEAM = '${input2}' AND G >= 20
+  FROM NBA.season_stats JOIN NBA.teams ON NBA.season_stats.TEAM = NBA.teams.ABBREVIATION
+  WHERE YEAR ='${input2}' AND TEAM_ID = '${input1}' AND G >= 20
   ORDER BY PTS DESC
   LIMIT 1
   `;
@@ -133,8 +134,8 @@ function getTeamTopRebounder(req, res) {
   var input2 = req.params.year
   var query = `
   SELECT PLAYER_NAME, TRB
-  FROM NBA.season_stats
-  WHERE YEAR ='${input1}' AND TEAM = '${input2}' AND G >= 20
+  FROM NBA.season_stats JOIN NBA.teams ON NBA.season_stats.TEAM = NBA.teams.ABBREVIATION
+  WHERE YEAR ='${input2}' AND TEAM_ID = '${input1}' AND G >= 20
   ORDER BY TRB DESC
   LIMIT 1
   `;
@@ -152,8 +153,8 @@ function getTeamTopPlayer(req, res) {
   var input2 = req.params.year
   var query = `
   SELECT PLAYER_NAME, PER
-  FROM NBA.season_stats
-  WHERE YEAR ='${input1}' AND TEAM = '${input2}' AND G >= 20
+  FROM NBA.season_stats JOIN NBA.teams ON NBA.season_stats.TEAM = NBA.teams.ABBREVIATION
+  WHERE YEAR ='${input2}' AND TEAM_ID = '${input1}' AND G >= 20
   ORDER BY PER DESC
   LIMIT 1
   `;
@@ -171,8 +172,8 @@ function getTeamTopPlayedPlayer(req, res) {
   var input2 = req.params.year
   var query = `
   SELECT PLAYER_NAME, MP
-  FROM NBA.season_stats
-  WHERE YEAR ='${input1}' AND TEAM = '${input2}'
+  FROM NBA.season_stats JOIN NBA.teams ON NBA.season_stats.TEAM = NBA.teams.ABBREVIATION
+  WHERE YEAR ='${input2}' AND TEAM_ID = '${input1}'
   ORDER BY MP DESC
   LIMIT 1
   `;
@@ -190,8 +191,8 @@ function getTeamTopAssister(req, res) {
   var input2 = req.params.year
   var query = `
   SELECT PLAYER_NAME, AST
-  FROM NBA.season_stats
-  WHERE YEAR ='${input1}' AND TEAM = '${input2}' AND G >= 20
+  FROM NBA.season_stats JOIN NBA.teams ON NBA.season_stats.TEAM = NBA.teams.ABBREVIATION
+  WHERE YEAR ='${input2}' AND TEAM_ID = '${input1}' AND G >= 20
   ORDER BY AST DESC
   LIMIT 1
   `;
@@ -208,10 +209,10 @@ function getTeamTop3ptShooter(req, res) {
   var input1 = req.params.team
   var input2 = req.params.year
   var query = `
-  SELECT PLAYER_NAME, `3P%`
-  FROM NBA.season_stats
-  WHERE YEAR ='${input1}' AND TEAM = '${input2}' AND G >= 20 AND 3PA > 20 
-  ORDER BY `3P%` DESC
+  SELECT PLAYER_NAME, '3P%'
+  FROM NBA.season_stats JOIN NBA.teams ON NBA.season_stats.TEAM = NBA.teams.ABBREVIATION
+  WHERE YEAR ='${input2}' AND TEAM_ID = '${input1}' AND G >= 20 AND 3PA > 20 
+  ORDER BY '3P%' DESC
   LIMIT 1
   `;
   connection.query(query, function (err, rows, fields) {
@@ -360,8 +361,7 @@ function getSeasonTop10Scorers(req, res) {
   group by PLAYER_ID
   order by PTS_TOTAL desc
   limit 10;
-  `
-    ;
+  `;
 
   connection.query(query, function (err, rows, fields) {
     if (err) console.log(err);
@@ -385,9 +385,7 @@ function getSeasonTop10Rebounders(req, res) {
   group by PLAYER_ID
   order by REB_TOTAL desc
   limit 10;
-  
-  `
-    ;
+  `;
 
   connection.query(query, function (err, rows, fields) {
     if (err) console.log(err);
@@ -489,24 +487,24 @@ function getDecades(req, res) {
 module.exports = {
   getPlayerInfo: getPlayerInfo,  
   
-  getTeamPlayers: getTeamPlayers
+  getTeamPlayers: getTeamPlayers,
   getTeamRecords: getTeamRecords,
-  getTeamAvgSalary: getTeamAvgSalary
-  getTeamTopScorer: getTeamTopScorer
-  getTeamTopRebounder: getTeamTopRebounder
-  getTeamTopPlayer: getTeamTopPlayer
-  getTeamTopPlayedPlayer: getTeamTopPlayedPlayer
-  getTeamTopAssister: getTeamTopAssister
-  getTeamTop3ptShooter: getTeamTop3ptShooter
-  getTeamInfo: getTeamInfo
-  getTeamTotalSalary: getTeamTotalSalary
+  getTeamAvgSalary: getTeamAvgSalary,
+  getTeamTopScorer: getTeamTopScorer,
+  getTeamTopRebounder: getTeamTopRebounder,
+  getTeamTopPlayer: getTeamTopPlayer,
+  getTeamTopPlayedPlayer: getTeamTopPlayedPlayer,
+  getTeamTopAssister: getTeamTopAssister,
+  getTeamTop3ptShooter: getTeamTop3ptShooter,
+  getTeamInfo: getTeamInfo,
+  getTeamTotalSalary: getTeamTotalSalary,
 
-  getGameInfoAsHomeTeam:getGameInfoAsHomeTeam
-  getGameInfoAsAwayTeam:getGameInfoAsAwayTeam
-  getSeasonPlayersStats:getSeasonPlayersStats
-  getSeasonTop10Scorers:getSeasonTop10Scorers
-  getSeasonTop10Rebounders:getSeasonTop10Rebounders
-  getSeasonTop10Assisters:getSeasonTop10Assisters
-  getSeasonTop10Stealers:getSeasonTop10Stealers
+  getGameInfoAsHomeTeam:getGameInfoAsHomeTeam,
+  getGameInfoAsAwayTeam:getGameInfoAsAwayTeam,
+  getSeasonPlayersStats:getSeasonPlayersStats,
+  getSeasonTop10Scorers:getSeasonTop10Scorers,
+  getSeasonTop10Rebounders:getSeasonTop10Rebounders,
+  getSeasonTop10Assisters:getSeasonTop10Assisters,
+  getSeasonTop10Stealers:getSeasonTop10Stealers,
   getSeasonTop10ThreePointsShooters:getSeasonTop10ThreePointsShooters
 }
