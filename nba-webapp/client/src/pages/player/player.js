@@ -104,9 +104,8 @@ const Player = props => {
           total += element;
         });
         let value = Math.round(total / years);
-        console.log(value);
         setAverage({ avg: value, years: years });
-        console.log(averageInfo.avg + "-" + averageInfo.years);
+        // console.log(averageInfo.avg + "-" + averageInfo.years);
       }, err => {
         console.log(err);
       });
@@ -139,7 +138,7 @@ const Player = props => {
               value={inputPlayer}
               onChange={e => {
                 setInputPlayer(e.target.value);
-                console.log(e.target.value);
+                // console.log(e.target.value);
               }}
               InputProps={{
                 startAdornment: (

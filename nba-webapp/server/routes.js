@@ -25,12 +25,11 @@ function getPlayerInfo(req, res) {
   connection.query(query, function (err, rows, fields) {
     if (err) console.log(err);
     else {
-      // connection.query(query, function (err, rows, fields) {
-      //   connection.query(query, function (err, rows, fields) {
       res.json(rows);
     }
   });
 }
+
 
 
 
@@ -93,5 +92,6 @@ module.exports = {
   getPlayerInfo: getPlayerInfo,
   getTeamInfo: getTeamInfo,
   getGameInfo: getGameInfo
+
 
 }
