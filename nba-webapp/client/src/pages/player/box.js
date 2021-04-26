@@ -3,9 +3,7 @@ import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 
-// function preventDefault(event) {
-//   event.preventDefault();
-// }
+
 
 const useStyles = makeStyles({
   depositContext: {
@@ -24,7 +22,7 @@ export default function Average(props) {
         {props.averageInfo.avg}
       </Typography>
       <Typography color="textSecondary" className={classes.depositContext} align="center">
-        3 points/year in total {props.averageInfo.years} years
+        PER in total <Typography variant="h5" color="primary">{props.averageInfo.years}</Typography> years
       </Typography>
 
     </React.Fragment>

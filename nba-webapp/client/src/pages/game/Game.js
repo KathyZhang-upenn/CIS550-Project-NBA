@@ -221,7 +221,7 @@ export default function Dashboard() {
         setHomeRecordRows(fecthedData);
       });
 
-      fetch("http://localhost:8081/game/playerstats/" + teamID1 + "&" + year,
+      fetch("http://localhost:8081/game/homeplayers/" + teamID1 + "&" + teamID2 + "&" + year,
       {
         method: 'GET'
       }).then(res => res.json(), err => {
@@ -231,7 +231,7 @@ export default function Dashboard() {
         setHomePlayerRows(fecthedData);
       });
 
-      fetch("http://localhost:8081/game/playerstats/" + teamID2 + "&" + year,
+      fetch("http://localhost:8081/game/awayplayers/" + teamID1 + "&" + teamID2 + "&" + year,
       {
         method: 'GET'
       }).then(res => res.json(), err => {

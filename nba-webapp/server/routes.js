@@ -18,19 +18,34 @@ function query(query, resultFunction) {
 function getPlayerInfo(req, res) {
   var input = req.params.player;
   var query = `
-  SELECT YEAR, TEAM, POSITION,3P AS THREEP, MP, PTS
+  SELECT YEAR, TEAM, POSITION, G, GS, (MP/G) As MPG, (PTS/G) AS PTS, 
+  (AST/G) AS AST, (TRB/G) AS REB, (STL/G) AS STL, (BLK/G) AS BLK, PER
   FROM NBA.season_stats
   WHERE PLAYER_NAME LIKE '${input}';
   `;
   connection.query(query, function (err, rows, fields) {
     if (err) console.log(err);
     else {
-      // connection.query(query, function (err, rows, fields) {
-      //   connection.query(query, function (err, rows, fields) {
       res.json(rows);
     }
   });
 }
+
+function getPlayerSalary(req, res) {
+  var input = req.params.player;
+  var query = `
+  SELECT YEAR, (SALARY/1000) AS SALARY, SEASON_RANK
+  FROM NBA.salaries
+  WHERE PLAYER_NAME LIKE '${input}';
+  `;
+  connection.query(query, function (err, rows, fields) {
+    if (err) console.log(err);
+    else {
+      res.json(rows);
+    }
+  });
+}
+
 
 
 
@@ -345,144 +360,130 @@ function getPlayerStatsOfVisitorTeam(req, res) {
   });
 };
 
-function getSeasonTop10Scorers(req, res) {
-  var inputSeason = req.params.year;
+// function getSeasonTop10Scorers(req, res) {
+//   var inputSeason = req.params.year;
 
-  var query = `
-  Select SEASON, PLAYER_NAME, TEAM_ABBREVIATION, TEAM_CITY, sum(pts) as PTS_TOTAL
-  from game_details
-  join games
-  on game_details.game_id = games.GAME_ID
-  where season = '${inputSeason}'
-  group by PLAYER_ID
-  order by PTS_TOTAL desc
-  limit 10;
-  `;
+//   var query = `
+//   Select SEASON, PLAYER_NAME, TEAM_ABBREVIATION, TEAM_CITY, sum(pts) as PTS_TOTAL
+//   from game_details
+//   join games
+//   on game_details.game_id = games.GAME_ID
+//   where season = '${inputSeason}'
+//   group by PLAYER_ID
+//   order by PTS_TOTAL desc
+//   limit 10;
+//   `;
 
-  connection.query(query, function (err, rows, fields) {
-    if (err) console.log(err);
-    else {
-      console.log(rows);
-      res.json(rows);
-    }
-  });
-};
+//   connection.query(query, function (err, rows, fields) {
+//     if (err) console.log(err);
+//     else {
+//       console.log(rows);
+//       res.json(rows);
+//     }
+//   });
+// };
 
-function getSeasonTop10Rebounders(req, res) {
-  var inputSeason = req.params.year;
+// function getSeasonTop10Rebounders(req, res) {
+//   var inputSeason = req.params.year;
 
-  var query = `
-  Select SEASON, PLAYER_NAME, TEAM_ABBREVIATION, TEAM_CITY, 
-  sum(reb) as REB_TOTAL
-  from game_details
-  join games
-  on game_details.game_id = games.GAME_ID
-  where season = '${inputSeason}'
-  group by PLAYER_ID
-  order by REB_TOTAL desc
-  limit 10;
-  `;
+//   var query = `
+//   Select SEASON, PLAYER_NAME, TEAM_ABBREVIATION, TEAM_CITY, 
+//   sum(reb) as REB_TOTAL
+//   from game_details
+//   join games
+//   on game_details.game_id = games.GAME_ID
+//   where season = '${inputSeason}'
+//   group by PLAYER_ID
+//   order by REB_TOTAL desc
+//   limit 10;
+//   `;
 
-  connection.query(query, function (err, rows, fields) {
-    if (err) console.log(err);
-    else {
-      console.log(rows);
-      res.json(rows);
-    }
-  });
-};
+//   connection.query(query, function (err, rows, fields) {
+//     if (err) console.log(err);
+//     else {
+//       console.log(rows);
+//       res.json(rows);
+//     }
+//   });
+// };
 
-function getSeasonTop10Assisters(req, res) {
-  var inputSeason = req.params.year;
+// function getSeasonTop10Assisters(req, res) {
+//   var inputSeason = req.params.year;
 
-  var query = `
-  Select SEASON, PLAYER_NAME, TEAM_ABBREVIATION, TEAM_CITY,  sum(AST) as AST_TOTAL
-  from game_details
-  join games
-  on game_details.game_id = games.GAME_ID
-  where season = '${inputSeason}'
-  group by PLAYER_ID
-  order by AST_TOTAL desc
-  limit 10;
-  `
-    ;
+//   var query = `
+//   Select SEASON, PLAYER_NAME, TEAM_ABBREVIATION, TEAM_CITY,  sum(AST) as AST_TOTAL
+//   from game_details
+//   join games
+//   on game_details.game_id = games.GAME_ID
+//   where season = '${inputSeason}'
+//   group by PLAYER_ID
+//   order by AST_TOTAL desc
+//   limit 10;
+//   `
+//     ;
 
-  connection.query(query, function (err, rows, fields) {
-    if (err) console.log(err);
-    else {
-      console.log(rows);
-      res.json(rows);
-    }
-  });
-};
+//   connection.query(query, function (err, rows, fields) {
+//     if (err) console.log(err);
+//     else {
+//       console.log(rows);
+//       res.json(rows);
+//     }
+//   });
+// };
 
-function getSeasonTop10Stealers(req, res) {
-  var inputSeason = req.params.year;
+// function getSeasonTop10Stealers(req, res) {
+//   var inputSeason = req.params.year;
 
-  var query = `
-  Select SEASON, PLAYER_NAME, TEAM_ABBREVIATION, TEAM_CITY,  sum(STL) as STL_TOTAL
-  from game_details
-  join games
-  on game_details.game_id = games.GAME_ID
-  where season = '${inputSeason}'
-  group by PLAYER_ID
-  order by STL_TOTAL desc
-  limit 10;
-  `
-    ;
+//   var query = `
+//   Select SEASON, PLAYER_NAME, TEAM_ABBREVIATION, TEAM_CITY,  sum(STL) as STL_TOTAL
+//   from game_details
+//   join games
+//   on game_details.game_id = games.GAME_ID
+//   where season = '${inputSeason}'
+//   group by PLAYER_ID
+//   order by STL_TOTAL desc
+//   limit 10;
+//   `
+//     ;
 
-  connection.query(query, function (err, rows, fields) {
-    if (err) console.log(err);
-    else {
-      console.log(rows);
-      res.json(rows);
-    }
-  });
-};
+//   connection.query(query, function (err, rows, fields) {
+//     if (err) console.log(err);
+//     else {
+//       console.log(rows);
+//       res.json(rows);
+//     }
+//   });
+// };
 
-function getSeasonTop10ThreePointsShooters(req, res) {
-  var inputSeason = req.params.year;
+// function getSeasonTop10ThreePointsShooters(req, res) {
+//   var inputSeason = req.params.year;
 
-  var query = `
-  Select SEASON, PLAYER_NAME, TEAM_ABBREVIATION, TEAM_CITY,  sum(FG3M) as FG3M_TOTAL
-  from game_details
-  join games
-  on game_details.game_id = games.GAME_ID
-  where season = '${inputSeason}'
-  group by PLAYER_ID
-  order by FG3M_TOTAL desc
-  limit 10;  
-  `
-    ;
+//   var query = `
+//   Select SEASON, PLAYER_NAME, TEAM_ABBREVIATION, TEAM_CITY,  sum(FG3M) as FG3M_TOTAL
+//   from game_details
+//   join games
+//   on game_details.game_id = games.GAME_ID
+//   where season = '${inputSeason}'
+//   group by PLAYER_ID
+//   order by FG3M_TOTAL desc
+//   limit 10;  
+//   `
+//     ;
 
-  connection.query(query, function (err, rows, fields) {
-    if (err) console.log(err);
-    else {
-      console.log(rows);
-      res.json(rows);
-    }
-  });
-};
-/* ----  ---- */
-function getDecades(req, res) {
-  var query = `
-  `;
-  connection.query(query, function (err, rows, fields) {
-    if (err) console.log(err);
-    else {
-      res.json(rows);
-    }
-  });
-}
-
-
-
-
+//   connection.query(query, function (err, rows, fields) {
+//     if (err) console.log(err);
+//     else {
+//       console.log(rows);
+//       res.json(rows);
+//     }
+//   });
+// };
 
 // The exported functions, which can be accessed in index.js.
 module.exports = {
-  getPlayerInfo: getPlayerInfo,  
-  
+  getPlayerInfo: getPlayerInfo,
+  getPlayerSalary: getPlayerSalary,
+
   getTeamPlayers: getTeamPlayers,
   getTeamRecords: getTeamRecords,
   getTeamAvgSalary: getTeamAvgSalary,
@@ -496,11 +497,13 @@ module.exports = {
   getTeamTotalSalary: getTeamTotalSalary,
 
   getGameInfo: getGameInfo,
-  getPlayerStatsOfHomeTeam:getPlayerStatsOfHomeTeam,
+  getPlayerStatsOfHomeTeam: getPlayerStatsOfHomeTeam,
   getPlayerStatsOfVisitorTeam: getPlayerStatsOfVisitorTeam,
-  getSeasonTop10Scorers:getSeasonTop10Scorers,
-  getSeasonTop10Rebounders:getSeasonTop10Rebounders,
-  getSeasonTop10Assisters:getSeasonTop10Assisters,
-  getSeasonTop10Stealers:getSeasonTop10Stealers,
-  getSeasonTop10ThreePointsShooters:getSeasonTop10ThreePointsShooters
+
+  // getSeasonTop10Scorers: getSeasonTop10Scorers,
+  // getSeasonTop10Rebounders: getSeasonTop10Rebounders,
+  // getSeasonTop10Assisters: getSeasonTop10Assisters,
+  // getSeasonTop10Stealers: getSeasonTop10Stealers,
+  // getSeasonTop10ThreePointsShooters: getSeasonTop10ThreePointsShooters
+
 }
