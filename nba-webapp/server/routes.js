@@ -542,10 +542,10 @@ module.exports = {
   getPlayerStatsOfHomeTeam: getPlayerStatsOfHomeTeam,
   getPlayerStatsOfVisitorTeam: getPlayerStatsOfVisitorTeam,
 
-  getSeasonTop10Scorers: getSeasonTop10Scorers,
-  getSeasonTop10Rebounders: getSeasonTop10Rebounders,
-  getSeasonTop10Assisters: getSeasonTop10Assisters,
-  getSeasonTop10Stealers: getSeasonTop10Stealers,
-  getSeasonTop10ThreePointsShooters: getSeasonTop10ThreePointsShooters
+  // getSeasonTop10Scorers: getSeasonTop10Scorers,
+  // getSeasonTop10Rebounders: getSeasonTop10Rebounders,
+  // getSeasonTop10Assisters: getSeasonTop10Assisters,
+  // getSeasonTop10Stealers: getSeasonTop10Stealers,
+  // getSeasonTop10ThreePointsShooters: getSeasonTop10ThreePointsShooters
 
 }
