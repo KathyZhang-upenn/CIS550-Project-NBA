@@ -17,11 +17,8 @@ app.use(bodyParser.urlencoded({ extended: false }));
 /* ---- Player ---- */
 // The route localhost:8081/genres is registered to the function
 
-
-app.get('/player/:player', routes.getPlayerInfo); // Hint: Replace () => {} with the appropriate route handler.
-
-
-
+app.get('/player/:player', routes.getPlayerInfo);
+app.get('/player/salary/:player', routes.getPlayerSalary);
 
 
 /* ---- Team  ---- */
@@ -37,7 +34,6 @@ app.get('/team/playedplayer/:team&:year', routes.getTeamTopPlayedPlayer);
 app.get('/team/assister/:team&:year', routes.getTeamTopAssister);
 app.get('/team/shooter/:team&:year', routes.getTeamTop3ptShooter);
 app.get('/team/topsalary/:team&:year', routes.getTeamTotalSalary);
-
 
 
 /* ---- Game ---- */

@@ -18,19 +18,34 @@ function query(query, resultFunction) {
 function getPlayerInfo(req, res) {
   var input = req.params.player;
   var query = `
-  SELECT YEAR, TEAM, POSITION,3P AS THREEP, MP, PTS
+  SELECT YEAR, TEAM, POSITION, G, GS, (MP/G) As MPG, (PTS/G) AS PTS, 
+  (AST/G) AS AST, (TRB/G) AS REB, (STL/G) AS STL, (BLK/G) AS BLK, PER
   FROM NBA.season_stats
   WHERE PLAYER_NAME LIKE '${input}';
   `;
   connection.query(query, function (err, rows, fields) {
     if (err) console.log(err);
     else {
-      // connection.query(query, function (err, rows, fields) {
-      //   connection.query(query, function (err, rows, fields) {
       res.json(rows);
     }
   });
 }
+
+function getPlayerSalary(req, res) {
+  var input = req.params.player;
+  var query = `
+  SELECT YEAR, (SALARY/1000) AS SALARY, SEASON_RANK
+  FROM NBA.salaries
+  WHERE PLAYER_NAME LIKE '${input}';
+  `;
+  connection.query(query, function (err, rows, fields) {
+    if (err) console.log(err);
+    else {
+      res.json(rows);
+    }
+  });
+}
+
 
 
 
@@ -507,8 +522,9 @@ function getPlayerStatsOfVisitorTeam(req, res) {
 
 // The exported functions, which can be accessed in index.js.
 module.exports = {
-  getPlayerInfo: getPlayerInfo,  
-  
+  getPlayerInfo: getPlayerInfo,
+  getPlayerSalary: getPlayerSalary,
+
   getTeamPlayers: getTeamPlayers,
   getTeamRecords: getTeamRecords,
   getTeamAvgSalary: getTeamAvgSalary,
@@ -521,13 +537,15 @@ module.exports = {
   getTeamInfo: getTeamInfo,
   getTeamTotalSalary: getTeamTotalSalary,
 
-  getGameInfoAsHomeTeam:getGameInfoAsHomeTeam,
-  getGameInfoAsAwayTeam:getGameInfoAsAwayTeam,
-  getPlayerStatsOfHomeTeam:getPlayerStatsOfHomeTeam,
+  getGameInfoAsHomeTeam: getGameInfoAsHomeTeam,
+  getGameInfoAsAwayTeam: getGameInfoAsAwayTeam,
+  getPlayerStatsOfHomeTeam: getPlayerStatsOfHomeTeam,
   getPlayerStatsOfVisitorTeam: getPlayerStatsOfVisitorTeam,
-  // getSeasonTop10Scorers:getSeasonTop10Scorers,
-  // getSeasonTop10Rebounders:getSeasonTop10Rebounders,
-  // getSeasonTop10Assisters:getSeasonTop10Assisters,
-  // getSeasonTop10Stealers:getSeasonTop10Stealers,
-  // getSeasonTop10ThreePointsShooters:getSeasonTop10ThreePointsShooters
+
+  getSeasonTop10Scorers: getSeasonTop10Scorers,
+  getSeasonTop10Rebounders: getSeasonTop10Rebounders,
+  getSeasonTop10Assisters: getSeasonTop10Assisters,
+  getSeasonTop10Stealers: getSeasonTop10Stealers,
+  getSeasonTop10ThreePointsShooters: getSeasonTop10ThreePointsShooters
+
 }
