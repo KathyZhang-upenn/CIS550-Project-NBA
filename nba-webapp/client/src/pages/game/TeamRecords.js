@@ -32,7 +32,7 @@ const Records = props => {
           </TableRow>
         </TableHead>
         <TableBody>
-          {props.rows.filter(row => row.away_team === props.awayteam.split(" ")[1]).map((row) => (
+          {props.rows.map((row) => (
             <TableRow key={row.season + row.game_time_est}>
               <TableCell>{row.season - 2000} - {row.season - 1999}</TableCell>
               <TableCell>{row.game_time_est}</TableCell>

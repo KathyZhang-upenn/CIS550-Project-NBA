@@ -211,7 +211,7 @@ export default function Dashboard() {
   }
 
   const updatePage = (teamID1, teamID2, year) => {
-    fetch("http://localhost:8081/game/hometeam/" + teamID1 + "&" + year,
+    fetch("http://localhost:8081/game/info/" + teamID1 + "&" + teamID2 + "&" + year,
       {
         method: 'GET'
       }).then(res => res.json(), err => {
