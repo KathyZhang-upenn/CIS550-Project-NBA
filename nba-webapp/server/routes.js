@@ -320,23 +320,60 @@ function getGameInfoAsAwayTeam(req, res) {
   });
 };
 
-function getSeasonPlayersStats(req, res) {
-  var inputTeam = req.params.team
+function getPlayerStatsOfHomeTeam(req, res) {
+  var inputHomeTeam = req.params.team1
+  var inputVisitorTeam = req.params.team2
   var inputSeason = req.params.year
 
   var query = `
-  Select games.season,teams.nickname, city, player_name,sum(PTS) as PTS,sum(fgm) as FGM, round(avg (FG_pct), 2) as FG_PCT,
-  sum(fg3m) as FG3M, round(avg(fg3_pct),2) as FG3_PCT,
-  sum(ftm) as FTM,round(avg(ft_pct),2) as FT_PCT,
-  sum(oreb) as OREB, sum(dreb) as DREB,
-  sum(reb) as REB, sum(ast) as AST, 
-  sum(stl) as STL, sum(pf) as PF
-  from game_details
-  join teams on game_details.team_ID = teams.team_ID
-  join games on games.GAME_ID = game_details.game_id
-  where games. season = '${inputSeason}' and teams.team_ID = '${inputTeam}'
-  group by game_details.PLAYER_ID
-  order by PTS DESC;
+  Select player_name, round(avg(PTS),1) as PTS,
+  round(avg(fgm),1) as FGM, round(avg (FG_pct), 2) as FG_PCT,
+  round(avg(fg3m),1) as FG3M, round(avg(fg3_pct),2) as FG3_PCT,
+  round(avg(ftm),1) as FTM, round(avg(ft_pct),2) as FT_PCT,
+  round(avg(oreb),1) as OREB, round(avg(dreb),1) as DREB,
+  round(avg(reb),1) as REB, round(avg(ast),1) as AST, 
+  round(avg(stl),1) as STL, round(avg(pf),1) as PF
+  From game_details
+  Join games ON games.game_ID = game_details.game_ID
+  and game_details.team_ID = '${inputHomeTeam}'
+  Where games. season = '${inputSeason}'
+  and games.home_team_ID= '${inputHomeTeam}' 
+  and games.visitor_team_ID = '${inputVisitorTeam}'
+  Group by game_details.PLAYER_ID
+  Order by PTS DESC;
+  `
+    ;
+
+  connection.query(query, function (err, rows, fields) {
+    if (err) console.log(err);
+    else {
+      console.log(rows);
+      res.json(rows);
+    }
+  });
+};
+
+function getPlayerStatsOfVisitorTeam(req, res) {
+  var inputHomeTeam = req.params.team1
+  var inputVisitorTeam = req.params.team2
+  var inputSeason = req.params.year
+
+  var query = `
+  Select player_name, round(avg(PTS),1) as PTS,
+  round(avg(fgm),1) as FGM, round(avg (FG_pct), 2) as FG_PCT,
+  round(avg(fg3m),1) as FG3M, round(avg(fg3_pct),2) as FG3_PCT,
+  round(avg(ftm),1) as FTM, round(avg(ft_pct),2) as FT_PCT,
+  round(avg(oreb),1) as OREB, round(avg(dreb),1) as DREB,
+  round(avg(reb),1) as REB, round(avg(ast),1) as AST, 
+  round(avg(stl),1) as STL, round(avg(pf),1) as PF
+  From game_details
+  Join games ON games.game_ID = game_details.game_ID
+  and game_details.team_ID = '${inputVisitorTeam}'
+  Where games. season = '${inputSeason}'
+  and games.home_team_ID= '${inputHomeTeam}' 
+  and games.visitor_team_ID = '${inputVisitorTeam}'
+  Group by game_details.PLAYER_ID
+  Order by PTS DESC;
   `
     ;
 
@@ -501,7 +538,8 @@ module.exports = {
 
   getGameInfoAsHomeTeam:getGameInfoAsHomeTeam,
   getGameInfoAsAwayTeam:getGameInfoAsAwayTeam,
-  getSeasonPlayersStats:getSeasonPlayersStats,
+  getPlayerStatsOfHomeTeam:getPlayerStatsOfHomeTeam,
+  getPlayerStatsOfVisitorTeam: getPlayerStatsOfVisitorTeam,
   getSeasonTop10Scorers:getSeasonTop10Scorers,
   getSeasonTop10Rebounders:getSeasonTop10Rebounders,
   getSeasonTop10Assisters:getSeasonTop10Assisters,
