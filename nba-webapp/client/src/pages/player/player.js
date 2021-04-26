@@ -205,6 +205,9 @@ const Player = props => {
                   <Typography component="h2" variant="h6" color="primary" gutterBottom>
                     Salary History
                   </Typography>
+                  <Typography variant="body2" color="succuess" gutterBottom>
+                    Note: some players have never disclosed their salaries or for a certain period
+                  </Typography>
                   <BarGraph data={salaryInfo} />
                 </Paper>
               </Grid>
