@@ -9,11 +9,11 @@ import Typography from '@material-ui/core/Typography';
 
 
 
-const useStyles = makeStyles((theme) => ({
-  seeMore: {
-    marginTop: theme.spacing(3),
-  },
-}));
+// const useStyles = makeStyles((theme) => ({
+//   seeMore: {
+//     marginTop: theme.spacing(3),
+//   },
+// }));
 
 export default function Table(props) {
   return (
@@ -21,27 +21,39 @@ export default function Table(props) {
       <Typography component="h2" variant="h6" color="primary" gutterBottom>
         Detailed History
     </Typography>
-      <MaterialTable size="small">
+      <MaterialTable size="medium">
         <TableHead>
           <TableRow>
             <TableCell>Year</TableCell>
             <TableCell>Team</TableCell>
             <TableCell>Position</TableCell>
-            <TableCell>3 Points</TableCell>
-            <TableCell>MP</TableCell>
-            <TableCell align="center">PTS</TableCell>
+            <TableCell>G</TableCell>
+            <TableCell>GS</TableCell>
+            <TableCell>MPG</TableCell>
+            <TableCell>PTS</TableCell>
+            <TableCell>AST</TableCell>
+            <TableCell>REB</TableCell>
+            <TableCell>STL</TableCell>
+            <TableCell>BLK</TableCell>
+            <TableCell>PER</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
           {props.rows.map((row) => (
             /* assign an unique key to each row */
-            <TableRow key={"i" + row.YEAR + "-" + row.MP + row.PTS}>
+            <TableRow key={"i" + row.YEAR + "-" + row.MPG + row.PTS}>
               <TableCell>{row.YEAR}</TableCell>
               <TableCell>{row.TEAM}</TableCell>
               <TableCell>{row.POSITION}</TableCell>
-              <TableCell>{row.THREEP}</TableCell>
-              <TableCell>{row.MP}</TableCell>
-              <TableCell align="center">{row.PTS}</TableCell>
+              <TableCell>{row.G}</TableCell>
+              <TableCell>{row.GS}</TableCell>
+              <TableCell>{row.MPG}</TableCell>
+              <TableCell>{row.PTS}</TableCell>
+              <TableCell>{row.AST}</TableCell>
+              <TableCell>{row.REB}</TableCell>
+              <TableCell>{row.STL}</TableCell>
+              <TableCell>{row.BLK}</TableCell>
+              <TableCell>{row.PER}</TableCell>
             </TableRow>
           ))}
           {/* a better way to rewrite the above lines with repeating would 

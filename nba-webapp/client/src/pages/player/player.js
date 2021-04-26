@@ -14,6 +14,8 @@ import HeaderLinks from "components/Header/HeaderLinks.js";
 import AccountCircle from '@material-ui/icons/AccountCircle';
 import TextField from '@material-ui/core/TextField';
 import InputAdornment from '@material-ui/core/InputAdornment';
+import Typography from '@material-ui/core/Typography';
+
 
 // header,footer of this page 
 import Header from "components/Header/Header.js";
@@ -22,30 +24,17 @@ import Footer from "components/Footer/Footer.js";
 import Chart from 'pages/player/chart.js';
 import Table from 'pages/player/table.js';
 import Average from 'pages/player/box.js'
-
+import BarGraph from './barChart';
 
 
 // make syles
-const drawerWidth = 240;
 const useStyles = makeStyles((theme) => ({
-  root: {
-    display: 'flex',
-    backgroundImage: 'url(/assets/image/BasetballBackground.jpeg)',
+  margin: {
+    margin: theme.spacing(1),
   },
-
   title: {
     flexGrow: 1,
   },
-  drawerPaper: {
-    position: 'relative',
-    whiteSpace: 'nowrap',
-    width: drawerWidth,
-    transition: theme.transitions.create('width', {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.enteringScreen,
-    }),
-  },
-
   appBarSpacer: theme.mixins.toolbar,
   content: {
     flexGrow: 1,
@@ -53,23 +42,36 @@ const useStyles = makeStyles((theme) => ({
     overflow: 'auto',
   },
   container: {
-    marginTop: 4,
+    marginTop: 0,
     paddingTop: theme.spacing(4),
-    paddingBottom: theme.spacing(4),
+    paddingBottom: theme.spacing(1),
+
   },
   paper: {
-    padding: theme.spacing(1),
+    padding: theme.spacing(2),
     display: 'flex',
     overflow: 'auto',
     flexDirection: 'column',
     paddingTop: theme.spacing(2),
     paddingBottom: theme.spacing(4),
-    paddingLeft: theme.spacing(4),
+    paddingLeft: theme.spacing(5),
   },
   fixedHeight: {
     height: 370,
   },
+  salary: {
+    height: 370,
+    padding: theme.spacing(2),
+    display: 'flex',
+    overflow: 'auto',
+    flexDirection: 'column',
+    paddingTop: theme.spacing(2),
+    paddingBottom: theme.spacing(4),
+    paddingLeft: theme.spacing(5),
+  }
 }));
+
+// const testData =
 
 
 const Player = props => {
@@ -79,6 +81,7 @@ const Player = props => {
   const [inputPlayer, setInputPlayer] = React.useState("");
   const [chartInfo, setChartInfo] = React.useState([]);
   const [averageInfo, setAverage] = React.useState({});
+  const [salaryInfo, setSalaryChart] = React.useState([]);
 
 
   const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
@@ -94,9 +97,8 @@ const Player = props => {
         if (!playerInfoList) return;
         console.log(playerInfoList);
         setTableRows(playerInfoList);
-        setChartInfo(playerInfoList.map(element => ({ YEAR: element.YEAR, VALUE: element.THREEP })));
-        const arr = playerInfoList.map(element => element.THREEP);
-        console.log(arr);
+        setChartInfo(playerInfoList.map(element => ({ YEAR: element.YEAR, VALUE: element.PER })));
+        const arr = playerInfoList.map(element => element.PER);
         let years = 0;
         let total = 0;
         arr.forEach(element => {
@@ -105,11 +107,24 @@ const Player = props => {
         });
         let value = Math.round(total / years);
         setAverage({ avg: value, years: years });
-        // console.log(averageInfo.avg + "-" + averageInfo.years);
+      }, err => {
+        console.log(err);
+      });
+
+    fetch("http://localhost:8081/player/salary/" + inputPlayer,
+      {
+        method: 'GET'
+      }).then(res => res.json(), err => {
+        console.log(err);
+      }).then(playerSalaryList => {
+        if (!playerSalaryList) return;
+        console.log(playerSalaryList);
+        setSalaryChart(playerSalaryList.map(element => ({ YEAR: element.YEAR, SALARY: element.SALARY, RANK: element.SEASON_RANK })));
       }, err => {
         console.log(err);
       });
   };
+
 
 
   return (
@@ -130,43 +145,50 @@ const Player = props => {
       <div >
         <main className={classes.content}>
           <div className={classes.appBarSpacer} />
-          <Container maxWidth="lg" className={classes.container}>
-            <TextField
-              className={classes.margin}
-              id="input-with-icon-textfield"
-              label="Search Player"
-              value={inputPlayer}
-              onChange={e => {
-                setInputPlayer(e.target.value);
-                // console.log(e.target.value);
-              }}
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <AccountCircle />
-                  </InputAdornment>
-                ),
-              }}
-            />
-            <Button
-              variant="contained"
-              color="primary"
-              className={classes.button}
-              endIcon={<Icon>send</Icon>}
-              id="playerSearchButton"
-              onClick={submitPlayer}
-            >
-              Search
+          <Container direction="row" className={classes.container}>
+            <Grid
+              container
+              direction="row"
+              justify="right"
+              alignItems="flex-end">
+              <TextField
+                className={classes.margin}
+                id="input-with-icon-textfield"
+                label="Search Player"
+                value={inputPlayer}
+                onChange={e => {
+                  setInputPlayer(e.target.value);
+                }}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <AccountCircle />
+                    </InputAdornment>
+                  ),
+                }}
+              />
+              <Button
+                className={classes.margin}
+                variant="contained"
+                color="primary"
+                endIcon={<Icon>send</Icon>}
+                id="playerSearchButton"
+                onClick={submitPlayer}
+              >
+                Search
             </Button>
+            </Grid>
           </Container>
           <Container maxWidth="lg" className={classes.container}>
             <Grid container spacing={4}>
               {/* <Grid items> */}
-
-              {/* Chart */}
+              {/* Score Chart */}
               <Grid item xs={9} md={8} lg={9}>
                 <Paper className={fixedHeightPaper}>
-                  <Chart data={chartInfo} />
+                  <Typography component="h2" variant="h6" color="primary" gutterBottom>
+                    Player Efficiency Rating History
+                  </Typography>
+                  <Chart data={chartInfo} ylabel="Rating" />
                 </Paper>
               </Grid>
 
@@ -176,6 +198,16 @@ const Player = props => {
                     <Average averageInfo={averageInfo} />
                   </Paper>
                 </Grid>}
+
+              {/* Salary BarChart */}
+              <Grid item xs={12} lg={12}>
+                <Paper className={classes.salary}>
+                  <Typography component="h2" variant="h6" color="primary" gutterBottom>
+                    Salary History
+                  </Typography>
+                  <BarGraph data={salaryInfo} />
+                </Paper>
+              </Grid>
 
               {/* Table */}
               <Grid item xs={12} lg={12}>
