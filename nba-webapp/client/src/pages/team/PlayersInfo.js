@@ -6,6 +6,7 @@ import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Title from './Title';
+import TableContainer from '@material-ui/core/TableContainer';
 
 const useStyles = makeStyles((theme) => ({
     seeMore: {
@@ -15,47 +16,47 @@ const useStyles = makeStyles((theme) => ({
 const PlayersInfo = props => {
     const classes = useStyles();
     return (
-        <React.Fragment>
+        <TableContainer>
             <Title>Players</Title>
             <Table size="small">
                 <TableHead>
                     <TableRow>
                         <TableCell>Name</TableCell>
-                        <TableCell>G</TableCell>
-                        <TableCell>GS</TableCell>
-                        <TableCell>MPG</TableCell>
-                        <TableCell>PTS</TableCell>
-                        <TableCell>AST</TableCell>
-                        <TableCell>REB</TableCell>
-                        <TableCell>STL</TableCell>
-                        <TableCell>BLK</TableCell>
+                        <TableCell align="right">G</TableCell>
+                        <TableCell align="right">GS</TableCell>
+                        <TableCell align="right">MPG</TableCell>
+                        <TableCell align="right">PTS</TableCell>
+                        <TableCell align="right">AST</TableCell>
+                        <TableCell align="right">REB</TableCell>
+                        <TableCell align="right">STL</TableCell>
+                        <TableCell align="right">BLK</TableCell>
                         {/* <TableCell>FG%</TableCell>
                         <TableCell>3P%</TableCell>
                         <TableCell>FT%</TableCell> */}
-                        <TableCell>PER</TableCell>
+                        <TableCell align="right">PER</TableCell>
                     </TableRow>
                 </TableHead>
                 <TableBody>
                     {props.rows.map((row) => (
                         <TableRow key={row.Name}>
                             <TableCell>{row.Name}</TableCell>
-                            <TableCell>{row.G}</TableCell>
-                            <TableCell>{row.GS}</TableCell>
-                            <TableCell>{row.MPG.toFixed(1)}</TableCell>
-                            <TableCell>{row.PTS.toFixed(1)}</TableCell>
-                            <TableCell>{row.AST.toFixed(1)}</TableCell>
-                            <TableCell>{row.REB.toFixed(1)}</TableCell>
-                            <TableCell>{row.STL.toFixed(1)}</TableCell>
-                            <TableCell>{row.BLK.toFixed(1)}</TableCell>
+                            <TableCell align="right">{row.G}</TableCell>
+                            <TableCell align="right">{row.GS}</TableCell>
+                            <TableCell align="right">{row.MPG.toFixed(1)}</TableCell>
+                            <TableCell align="right">{row.PTS.toFixed(1)}</TableCell>
+                            <TableCell align="right">{row.AST.toFixed(1)}</TableCell>
+                            <TableCell align="right">{row.REB.toFixed(1)}</TableCell>
+                            <TableCell align="right">{row.STL.toFixed(1)}</TableCell>
+                            <TableCell align="right">{row.BLK.toFixed(1)}</TableCell>
                             {/* <TableCell>{row.FGR}</TableCell>
                             <TableCell>{row.TPR}</TableCell>
                             <TableCell>{row.FTR}</TableCell> */}
-                            <TableCell>{row.PER}</TableCell>
+                            <TableCell align="right">{row.PER}</TableCell>
                         </TableRow>
                     ))}
                 </TableBody>
             </Table>
-        </React.Fragment>
+        </TableContainer>
     );
 }
 export default PlayersInfo;

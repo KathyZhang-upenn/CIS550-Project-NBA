@@ -19,6 +19,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 
 app.get('/player/:player', routes.getPlayerInfo);
 app.get('/player/salary/:player', routes.getPlayerSalary);
+app.get('/player/:Recommendedplayer', routes.getRecommendedPlayer);
 
 
 /* ---- Team  ---- */
@@ -32,20 +33,20 @@ app.get('/team/rebounder/:team&:year', routes.getTeamTopRebounder);
 app.get('/team/player/:team&:year', routes.getTeamTopPlayer);
 app.get('/team/playedplayer/:team&:year', routes.getTeamTopPlayedPlayer);
 app.get('/team/assister/:team&:year', routes.getTeamTopAssister);
-app.get('/team/shooter/:team&:year', routes.getTeamTop3ptShooter);
-app.get('/team/topsalary/:team&:year', routes.getTeamTotalSalary);
+app.get('/team/stealer/:team&:year', routes.getTeamTop3ptShooter);
+app.get('/team/totalsalary/:team&:year', routes.getTeamTotalSalary);
 
 
 /* ---- Game ---- */
 
-app.get('/game/info/:team1&:team2&:year', routes.getGameInfo);
-app.get('/game/homeplayers/:team1&:team2&:year', routes.getPlayerStatsOfHomeTeam);
-app.get('/game/awayplayers/:team1&:team2&:year', routes.getPlayerStatsOfVisitorTeam);
-// app.get('/game/scorers/:year', routes.getSeasonTop10Scorers);
-// app.get('/game/rebounders/:year', routes.getSeasonTop10Rebounders);
-// app.get('/game/assisters/:year', routes.getSeasonTop10Assisters);
-// app.get('/game/stealers/:year', routes.getSeasonTop10Stealers);
-// app.get('/game/shooters/:year', routes.getSeasonTop10ThreePointsShooters);
+app.get('/game/hometeam/:team&:year', routes.getGameInfo);
+app.get('/game/playerstats/:team&:year', routes.getPlayerStatsOfHomeTeam);
+app.get('/game/playerstats/:team&:year', routes.getPlayerStatsOfVisitorTeam);
+//app.get('/game/scorers/:year', routes.getSeasonTop10Scorers);
+//app.get('/game/rebounders/:year', routes.getSeasonTop10Rebounders);
+//app.get('/game/assisters/:year', routes.getSeasonTop10Assisters);
+//app.get('/game/stealers/:year', routes.getSeasonTop10Stealers);
+//app.get('/game/shooters/:year', routes.getSeasonTop10ThreePointsShooters;
 
 
 app.listen(8081, () => {

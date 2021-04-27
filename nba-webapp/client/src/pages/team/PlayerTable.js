@@ -18,25 +18,19 @@ const Records = props => {
   const classes = useStyles();
   return (
     <TableContainer>
-      <Title>Records</Title>
+      <Title>{props.title}</Title>
       <Table size="small">
         <TableHead>
           <TableRow>
-            <TableCell>Season</TableCell>
-            <TableCell>Games</TableCell>
-            <TableCell>Win</TableCell>
-            <TableCell>Loss</TableCell>
-            <TableCell>Win %</TableCell>
+            <TableCell>Name</TableCell>
+            <TableCell align="right">{props.measure}</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
           {props.rows.map((row) => (
             <TableRow key={row.Season}>
-              <TableCell>{row.Season} - {row.Season - 1999}</TableCell>
-              <TableCell>{row.Games}</TableCell>
-              <TableCell>{row.Win}</TableCell>
-              <TableCell>{row.Loss}</TableCell>
-              <TableCell>{(row.WinR * 100).toFixed(2)}</TableCell>
+              <TableCell>{row.PLAYER_NAME}</TableCell>
+              <TableCell align="right">{row.MEASURE}</TableCell>
             </TableRow>
           ))}
         </TableBody>

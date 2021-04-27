@@ -22,6 +22,8 @@ import Teamtag from './Teamtag';
 import Yeartag from './YearTag';
 import TeamRecords from './TeamRecords';
 import PlayerRecords from './PlayerRecords';
+import Footer from "components/Footer/Footer.js";
+import SportsBasketballIcon from '@material-ui/icons/SportsBasketball';
 
 
 
@@ -258,6 +260,7 @@ export default function Dashboard() {
           >
             <MenuIcon />
           </IconButton>
+          <SportsBasketballIcon color="white" />
           <Typography component="h1" variant="h6" color="white" noWrap className={classes.title}>
             NBA Statistics and History
           </Typography>
@@ -345,9 +348,7 @@ export default function Dashboard() {
 
 
           </Grid>
-          <Box pt={4}>
-            <Copyright />
-          </Box>
+          <Footer />
         </Container>
       </main>
 
