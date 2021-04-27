@@ -129,10 +129,10 @@ function getTeamTopScorer(req, res) {
   var input1 = req.params.team
   var input2 = req.params.year
   var query = `
-  SELECT PLAYER_NAME, PTS
+  SELECT PLAYER_NAME, PTS AS MEASURE
   FROM NBA.season_stats JOIN NBA.teams ON NBA.season_stats.TEAM = NBA.teams.ABBREVIATION
   WHERE YEAR ='${input2}' AND TEAM_ID = '${input1}' AND G >= 20
-  ORDER BY PTS DESC
+  ORDER BY MEASURE DESC
   LIMIT 1
   `;
   connection.query(query, function (err, rows, fields) {
@@ -148,10 +148,10 @@ function getTeamTopRebounder(req, res) {
   var input1 = req.params.team
   var input2 = req.params.year
   var query = `
-  SELECT PLAYER_NAME, TRB
+  SELECT PLAYER_NAME, TRB AS MEASURE
   FROM NBA.season_stats JOIN NBA.teams ON NBA.season_stats.TEAM = NBA.teams.ABBREVIATION
   WHERE YEAR ='${input2}' AND TEAM_ID = '${input1}' AND G >= 20
-  ORDER BY TRB DESC
+  ORDER BY MEASURE DESC
   LIMIT 1
   `;
   connection.query(query, function (err, rows, fields) {
@@ -167,10 +167,10 @@ function getTeamTopPlayer(req, res) {
   var input1 = req.params.team
   var input2 = req.params.year
   var query = `
-  SELECT PLAYER_NAME, PER
+  SELECT PLAYER_NAME, PER AS MEASURE
   FROM NBA.season_stats JOIN NBA.teams ON NBA.season_stats.TEAM = NBA.teams.ABBREVIATION
   WHERE YEAR ='${input2}' AND TEAM_ID = '${input1}' AND G >= 20
-  ORDER BY PER DESC
+  ORDER BY MEASURE DESC
   LIMIT 1
   `;
   connection.query(query, function (err, rows, fields) {
@@ -186,10 +186,10 @@ function getTeamTopPlayedPlayer(req, res) {
   var input1 = req.params.team
   var input2 = req.params.year
   var query = `
-  SELECT PLAYER_NAME, MP
+  SELECT PLAYER_NAME, MP AS MEASURE
   FROM NBA.season_stats JOIN NBA.teams ON NBA.season_stats.TEAM = NBA.teams.ABBREVIATION
   WHERE YEAR ='${input2}' AND TEAM_ID = '${input1}'
-  ORDER BY MP DESC
+  ORDER BY MEASURE DESC
   LIMIT 1
   `;
   connection.query(query, function (err, rows, fields) {
@@ -205,10 +205,10 @@ function getTeamTopAssister(req, res) {
   var input1 = req.params.team
   var input2 = req.params.year
   var query = `
-  SELECT PLAYER_NAME, AST
+  SELECT PLAYER_NAME, AST AS MEASURE
   FROM NBA.season_stats JOIN NBA.teams ON NBA.season_stats.TEAM = NBA.teams.ABBREVIATION
   WHERE YEAR ='${input2}' AND TEAM_ID = '${input1}' AND G >= 20
-  ORDER BY AST DESC
+  ORDER BY MEASURE DESC
   LIMIT 1
   `;
   connection.query(query, function (err, rows, fields) {
@@ -224,10 +224,10 @@ function getTeamTop3ptShooter(req, res) {
   var input1 = req.params.team
   var input2 = req.params.year
   var query = `
-  SELECT PLAYER_NAME, '3P%'
+  SELECT PLAYER_NAME, STL AS MEASURE
   FROM NBA.season_stats JOIN NBA.teams ON NBA.season_stats.TEAM = NBA.teams.ABBREVIATION
   WHERE YEAR ='${input2}' AND TEAM_ID = '${input1}' AND G >= 20 AND 3PA > 20 
-  ORDER BY '3P%' DESC
+  ORDER BY MEASURE DESC
   LIMIT 1
   `;
   connection.query(query, function (err, rows, fields) {

@@ -12,11 +12,12 @@ const useStyles = makeStyles({
 
 const TeamInfo = props => {
     const classes = useStyles();
+    var nf = new Intl.NumberFormat()
     return (
         <React.Fragment>
             <Title>{props.title}</Title>
             <Typography component="p" variant="h5">
-                {props.content}
+                ${nf.format(props.content.toFixed(0))}
             </Typography>
         </React.Fragment>
     );

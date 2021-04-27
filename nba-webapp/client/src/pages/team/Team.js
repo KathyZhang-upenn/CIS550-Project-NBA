@@ -20,8 +20,12 @@ import TeamList from './ListItems';
 import Teamtag from './Teamtag';
 import Records from './Records';
 import PlayersInfo from './PlayersInfo';
+import PlayerTable from './PlayerTable';
 import TeamInfo from './TeamInfo';
 import Background from './Background';
+import Header from "components/Header/Header.js";
+import SportsBasketballIcon from '@material-ui/icons/SportsBasketball';
+import Footer from "components/Footer/Footer.js";
 
 
 function Copyright() {
@@ -155,14 +159,14 @@ const Team = () => {
   const [recordRows, setRecordRows] = useState([]);
   const [playerRows, setPlayerRows] = useState([]);
   const [background, setBackground] = useState([]);
-  const [avgsalary, setAvgSalary] = useState("");
-  const [topsalary, setTopSalary] = useState("");
-  const [scorer, setScorer] = useState("");
-  const [rebounder, setRebounder] = useState("");
-  const [player, setPlayer] = useState("");
-  const [playedPlayer, setPlayedPlayer] = useState("");
-  const [assister, setAssister] = useState("");
-  const [shooter, setShooter] = useState("");
+  const [avgsalary, setAvgSalary] = useState(0);
+  const [topsalary, setTopSalary] = useState(0);
+  const [scorer, setScorer] = useState([]);
+  const [rebounder, setRebounder] = useState([]);
+  const [player, setPlayer] = useState([]);
+  const [playedPlayer, setPlayedPlayer] = useState([]);
+  const [assister, setAssister] = useState([]);
+  const [shooter, setShooter] = useState([]);
 
 
   const changeTeamHandler = (teamname, teamID) => {
@@ -224,7 +228,7 @@ const Team = () => {
         else setAvgSalary("");
       });
 
-    fetch("http://localhost:8081/team/topsalary/" + teamID + "&" + year,
+    fetch("http://localhost:8081/team/totalsalary/" + teamID + "&" + year,
       {
         method: 'GET'
       }).then(res => res.json(), err => {
@@ -243,9 +247,7 @@ const Team = () => {
         console.log(err);
       }).then(fetchedData => {
         if (!fetchedData) return;
-        // console.log(fetchedTeamInfo);
-        if (fetchedData.length != 0) setScorer(fetchedData[0].PLAYER_NAME);
-        else setScorer("")
+        setScorer(fetchedData);
       });
 
     fetch("http://localhost:8081/team/rebounder/" + teamID + "&" + year,
@@ -255,9 +257,7 @@ const Team = () => {
         console.log(err);
       }).then(fetchedData => {
         if (!fetchedData) return;
-        // console.log(fetchedTeamInfo);
-        if (fetchedData.length != 0) setRebounder(fetchedData[0].PLAYER_NAME);
-        else setRebounder("")
+        setRebounder(fetchedData);
       });
 
     fetch("http://localhost:8081/team/player/" + teamID + "&" + year,
@@ -267,9 +267,7 @@ const Team = () => {
         console.log(err);
       }).then(fetchedData => {
         if (!fetchedData) return;
-        // console.log(fetchedTeamInfo);
-        if (fetchedData.length != 0) setPlayer(fetchedData[0].PLAYER_NAME);
-        else setPlayer("")
+        setPlayer(fetchedData);
       });
 
     fetch("http://localhost:8081/team/playedplayer/" + teamID + "&" + year,
@@ -279,9 +277,7 @@ const Team = () => {
         console.log(err);
       }).then(fetchedData => {
         if (!fetchedData) return;
-        // console.log(fetchedTeamInfo);
-        if (fetchedData.length != 0) setPlayedPlayer(fetchedData[0].PLAYER_NAME);
-        else setPlayedPlayer("")
+        setPlayedPlayer(fetchedData);
       });
 
     fetch("http://localhost:8081/team/assister/" + teamID + "&" + year,
@@ -291,21 +287,17 @@ const Team = () => {
         console.log(err);
       }).then(fetchedData => {
         if (!fetchedData) return;
-        // console.log(fetchedTeamInfo);
-        if (fetchedData.length != 0) setAssister(fetchedData[0].PLAYER_NAME);
-        else setAssister("")
+        setAssister(fetchedData);
       });
 
-    fetch("http://localhost:8081/team/shooter/" + teamID + "&" + year,
+    fetch("http://localhost:8081/team/stealer/" + teamID + "&" + year,
       {
         method: 'GET'
       }).then(res => res.json(), err => {
         console.log(err);
       }).then(fetchedData => {
         if (!fetchedData) return;
-        // console.log(fetchedTeamInfo);
-        if (fetchedData.length != 0) setShooter(fetchedData[0].PLAYER_NAME);
-        else setShooter("")
+        setShooter(fetchedData);
       });
 
 
@@ -326,12 +318,24 @@ const Team = () => {
           >
             <MenuIcon />
           </IconButton>
-          <Typography component="h1" variant="h6" color="white" noWrap className={classes.title}>
+          <SportsBasketballIcon color="white" />
+          <Typography component="h1" variant="h6" color="transparent" noWrap className={classes.title}>
             NBA Statistics and History
           </Typography>
 
         </Toolbar>
       </AppBar>
+      {/* <Header
+        color="transparent"
+        brand="NBA Statistics and History"
+        fixed
+        changeColorOnScroll={{
+          height: 400,
+          color: "white"
+        }}
+      >
+        <SportsBasketballIcon color="primary" />
+      </Header> */}
       <Drawer
         variant="permanent"
         className={clsx(classes.drawer, {
@@ -390,37 +394,37 @@ const Team = () => {
             </Grid>
             <Grid item xs={6}>
               <Paper className={classes.paper}>
-                <TeamInfo title={"Top Salary"} content={topsalary} />
+                <TeamInfo title={"Total Salary"} content={topsalary} />
               </Paper>
             </Grid>
             <Grid item xs={4}>
               <Paper className={classes.paper}>
-                <TeamInfo title={"Top Scorer"} content={scorer} />
+                <PlayerTable title={"Top Scorer"} measure={"PTS"} rows={scorer} />
               </Paper>
             </Grid>
             <Grid item xs={4}>
               <Paper className={classes.paper}>
-                <TeamInfo title={"Top Rebounder"} content={rebounder} />
+                <PlayerTable title={"Top Rebounder"} measure={"REB"} rows={rebounder} />
               </Paper>
             </Grid>
             <Grid item xs={4}>
               <Paper className={classes.paper}>
-                <TeamInfo title={"Top Player"} content={player} />
+                <PlayerTable title={"Top Baller"} measure={"PER"} rows={player} />
               </Paper>
             </Grid>
             <Grid item xs={4}>
               <Paper className={classes.paper}>
-                <TeamInfo title={"Top Played Player"} content={playedPlayer} />
+                <PlayerTable title={"Top Hustler"} measure={"MP"} rows={playedPlayer} />
               </Paper>
             </Grid>
             <Grid item xs={4}>
               <Paper className={classes.paper}>
-                <TeamInfo title={"Top Assister"} content={assister} />
+                <PlayerTable title={"Top Assister"} measure={"AST"} rows={assister} />
               </Paper>
             </Grid>
             <Grid item xs={4}>
               <Paper className={classes.paper}>
-                <TeamInfo title={"Top Shooter"} content={shooter} />
+                <PlayerTable title={"Top Stealer"} measure={"STL"} rows={shooter} />
               </Paper>
             </Grid>
             {/* Team Players */}
@@ -430,9 +434,7 @@ const Team = () => {
               </Paper>
             </Grid>
           </Grid>
-          <Box pt={4}>
-            <Copyright />
-          </Box>
+          <Footer />
         </Container>
       </main>
     </div>

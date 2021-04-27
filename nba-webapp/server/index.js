@@ -32,8 +32,8 @@ app.get('/team/rebounder/:team&:year', routes.getTeamTopRebounder);
 app.get('/team/player/:team&:year', routes.getTeamTopPlayer);
 app.get('/team/playedplayer/:team&:year', routes.getTeamTopPlayedPlayer);
 app.get('/team/assister/:team&:year', routes.getTeamTopAssister);
-app.get('/team/shooter/:team&:year', routes.getTeamTop3ptShooter);
-app.get('/team/topsalary/:team&:year', routes.getTeamTotalSalary);
+app.get('/team/stealer/:team&:year', routes.getTeamTop3ptShooter);
+app.get('/team/totalsalary/:team&:year', routes.getTeamTotalSalary);
 
 
 /* ---- Game ---- */
