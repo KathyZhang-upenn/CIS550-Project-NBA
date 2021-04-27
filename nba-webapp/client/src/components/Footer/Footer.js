@@ -47,10 +47,10 @@ export default function Footer(props) {
                 About us
               </a>
             </ListItem>
-        
+
             <ListItem className={classes.inlineBlock}>
               <a
-                href="https://www.creative-tim.com/license?ref=mkr-footer"
+                href="https://material-ui.com/store/license/"
                 className={classes.block}
                 target="_blank"
               >
