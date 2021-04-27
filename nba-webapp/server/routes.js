@@ -46,6 +46,36 @@ function getPlayerSalary(req, res) {
   });
 }
 
+function getRecommendedPlayer(req, res) {
+  var input = req.params.player;
+  var query = `
+    With recPlayer As (
+    Select player_name, position, round(Avg(PER),1) as PER,
+    round(Avg(G),1) as G, round(Avg(PTS/G),1) as PTS,
+    round(Avg(AST/G),1) as AST, round(Avg(TRB/G),1) as REB,
+    round(Avg(STL/G),1) as STL
+    From season_stats
+    Where player_name <> '${input}'
+    and position in (
+    Select position
+    From season_stats
+    Where player_name Like '${input}')
+    Group by player_name)
+    
+    Select player_name, G, PTS, AST, REB, STL, PER,
+    Round(ABS(PER- (select avg(PER) From season_stats
+    Where player_name Like '${input}')),1) As PER_Difference
+    From recPlayer
+    Order by PER_Difference
+    Limit 1;
+  `;
+  connection.query(query, function (err, rows, fields) {
+    if (err) console.log(err);
+    else {
+      res.json(rows);
+    }
+  });
+}
 
 
 
@@ -483,6 +513,7 @@ function getPlayerStatsOfVisitorTeam(req, res) {
 module.exports = {
   getPlayerInfo: getPlayerInfo,
   getPlayerSalary: getPlayerSalary,
+  getRecommendedPlayer: getRecommendedPlayer,
 
   getTeamPlayers: getTeamPlayers,
   getTeamRecords: getTeamRecords,
