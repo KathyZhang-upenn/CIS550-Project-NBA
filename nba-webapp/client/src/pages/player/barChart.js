@@ -5,7 +5,6 @@ import {
 
 export default function BarGraph(props) {
 
-  console.log(props.data);
   return (
     <React.Fragment>
       <ResponsiveContainer width="100%" height="100%">

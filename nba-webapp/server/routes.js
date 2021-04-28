@@ -18,8 +18,8 @@ function query(query, resultFunction) {
 function getPlayerInfo(req, res) {
   var input = req.params.player;
   var query = `
-  SELECT YEAR, TEAM, POSITION, G, GS, (MP/G) As MPG, (PTS/G) AS PTS, 
-  (AST/G) AS AST, (TRB/G) AS REB, (STL/G) AS STL, (BLK/G) AS BLK, PER
+  SELECT YEAR, TEAM, POSITION, G, GS, round((MP/G),1) As MPG, round((PTS/G), 1) AS PTS, 
+  round((AST/G),1) AS AST, round((TRB/G),1) AS REB, round((STL/G),1) AS STL, round((BLK/G),1) AS BLK, PER
   FROM NBA.season_stats
   WHERE PLAYER_NAME LIKE '${input}';
   `;
@@ -50,7 +50,7 @@ function getRecommendedPlayer(req, res) {
   var input = req.params.player;
   var query = `
     With recPlayer As (
-    Select player_name, position, round(Avg(PER),1) as PER,
+    Select player_name, position, round(Avg(MP/G),1) AS MPG, round(Avg(PER),1) as PER,
     round(Avg(G),1) as G, round(Avg(PTS/G),1) as PTS,
     round(Avg(AST/G),1) as AST, round(Avg(TRB/G),1) as REB,
     round(Avg(STL/G),1) as STL
@@ -62,7 +62,7 @@ function getRecommendedPlayer(req, res) {
     Where player_name Like '${input}')
     Group by player_name)
     
-    Select player_name, G, PTS, AST, REB, STL, PER,
+    Select player_name, G, MPG, PTS, AST, REB, STL, PER,
     Round(ABS(PER- (select avg(PER) From season_stats
     Where player_name Like '${input}')),1) As PER_Difference
     From recPlayer

@@ -9,11 +9,6 @@ import Typography from '@material-ui/core/Typography';
 
 
 
-// const useStyles = makeStyles((theme) => ({
-//   seeMore: {
-//     marginTop: theme.spacing(3),
-//   },
-// }));
 
 export default function Table(props) {
   return (

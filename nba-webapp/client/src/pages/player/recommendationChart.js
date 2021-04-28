@@ -9,7 +9,6 @@ const style = {
 };
 export default function Recommendation(props) {
 
-  console.log(props.data);
 
   return (
     <React.Fragment>
@@ -25,15 +24,15 @@ export default function Recommendation(props) {
       >
         <RadialBar
           minAngle={15}
-          label={{ position: "insideStart", fill: "#fff" }}
+
           background
           clockWise
           dataKey="VALUE"
         />
         <Legend
-          iconSize={10}
-          width={120}
-          height={140}
+          iconSize={15}
+          width={150}
+          height={170}
           layout="vertical"
           verticalAlign="middle"
           wrapperStyle={style}

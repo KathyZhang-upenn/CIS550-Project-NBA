@@ -19,7 +19,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 
 app.get('/player/:player', routes.getPlayerInfo);
 app.get('/player/salary/:player', routes.getPlayerSalary);
-app.get('/player/:Recommendedplayer', routes.getRecommendedPlayer);
+app.get('/player/recommendation/:player', routes.getRecommendedPlayer);
 
 
 /* ---- Team  ---- */

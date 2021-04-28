@@ -13,7 +13,6 @@ const useStyles = makeStyles({
 
 export default function Average(props) {
   const classes = useStyles();
-  console.log(props.averageInfo.avg);
 
   return (
     <React.Fragment>

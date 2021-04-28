@@ -12,7 +12,6 @@ const useStyles = makeStyles(styles);
 
 export default function Chart(props) {
   const theme = useTheme();
-  console.log(props.data);
 
 
 
