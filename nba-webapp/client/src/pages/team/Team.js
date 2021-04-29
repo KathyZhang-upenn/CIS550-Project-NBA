@@ -236,7 +236,7 @@ const Team = () => {
       }).then(fetchedData => {
         if (!fetchedData) return;
         // console.log(fetchedTeamInfo);
-        if (fetchedData.length != 0) setTopSalary(fetchedData[0].Salary);
+        if (fetchedData.length != 0) setTopSalary(fetchedData[0].SUM_SALARY);
         else setTopSalary("")
       });
 
