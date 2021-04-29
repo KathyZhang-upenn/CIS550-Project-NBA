@@ -86,7 +86,7 @@ const Player = props => {
   const [recommendedPlayerInfo, setRecommendationInfo] = React.useState([]);
   const [recommendedPlayerName, setRecommendedPName] = React.useState("");
   const [inputPlayerRChart, setInputPlayerRChart] = React.useState([]);
-
+  const [playerNotFound, setPlayerNotFound] = React.useState(false);
 
   const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
 
@@ -95,10 +95,14 @@ const Player = props => {
     fetch("http://localhost:8081/player/" + inputPlayer,
       {
         method: 'GET'
-      }).then(res => res.json(), err => {
-        console.log(err);
+      }).then(res => {
+        if (res.ok) {
+          return res.json()
+        }
+        setPlayerNotFound(true);
       }).then(playerInfoList => {
         if (!playerInfoList) return;
+        setPlayerNotFound(false);
         setTableRows(playerInfoList);
         setChartInfo(playerInfoList.map(element => ({ YEAR: element.YEAR, VALUE: element.PER })));
         const arr = playerInfoList.map(element => element.PER);
@@ -113,39 +117,39 @@ const Player = props => {
         setInputPlayerRChart(Object.keys(playerInfoList[0]).filter(key => key === "G" || key === "PTS"
           || key === "AST" || key === "REB" || key === "STL" || key === "PER" || key === "MPG")
           .map((key, i) => ({ name: key, VALUE: playerInfoList[0][key] * 1500, fill: color[i++] })));
-      }, err => {
-        console.log(err);
       });
 
     fetch("http://localhost:8081/player/salary/" + inputPlayer,
       {
         method: 'GET'
-      }).then(res => res.json(), err => {
-        console.log(err);
+      }).then(res => {
+        if (res.ok) {
+          return res.json()
+        }
+        setPlayerNotFound(true);
       }).then(playerSalaryList => {
         if (!playerSalaryList) return;
+        setPlayerNotFound(false);
         setSalaryChart(playerSalaryList.map(element => ({ YEAR: element.YEAR, SALARY: element.SALARY, RANK: element.SEASON_RANK })));
-      }, err => {
-        console.log(err);
       });
 
     fetch("http://localhost:8081/player/recommendation/" + inputPlayer,
       {
         method: 'GET'
-      }).then(res => res.json(), err => { console.log(err); }
-      ).then(recommendationList => {
+      }).then(res => {
+        if (res.ok) {
+          return res.json()
+        }
+        setPlayerNotFound(true);
+      }).then(recommendationList => {
         if (!recommendationList) return;
-
+        setPlayerNotFound(false);
         setRecommendationInfo(Object.keys(recommendationList[0]).filter(key => key !== "player_name" && key !== "PER_Difference")
           .map((key, i) => ({ name: key, VALUE: recommendationList[0][key] * 1500, fill: color[i++] })));
 
         setRecommendedPName(recommendationList[0].player_name);
 
-
-      })
-
-
-
+      });
   };
 
 
@@ -169,6 +173,7 @@ const Player = props => {
         <main className={classes.content}>
           <div className={classes.appBarSpacer} />
           <Container direction="row" className={classes.container}>
+            {playerNotFound && <Typography component="h2" variant="h6" color="primary" gutterBottom>Player Not Found!</Typography>}
             <Grid
               container
               direction="row"

@@ -25,6 +25,9 @@ function getPlayerInfo(req, res) {
   `;
   connection.query(query, function (err, rows, fields) {
     if (err) console.log(err);
+    else if (rows.length === 0) {
+      res.status(404).send({ error: "No result!" });
+    }
     else {
       res.json(rows);
     }
@@ -40,6 +43,9 @@ function getPlayerSalary(req, res) {
   `;
   connection.query(query, function (err, rows, fields) {
     if (err) console.log(err);
+    else if (rows.length === 0) {
+      res.status(404).send({ error: "No result!" });
+    }
     else {
       res.json(rows);
     }
@@ -71,6 +77,9 @@ function getRecommendedPlayer(req, res) {
   `;
   connection.query(query, function (err, rows, fields) {
     if (err) console.log(err);
+    else if (rows.length === 0) {
+      res.status(404).send({ error: "No result!" });
+    }
     else {
       res.json(rows);
     }
